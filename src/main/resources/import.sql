@@ -13,6 +13,10 @@ INSERT INTO vendor_contact(id) VALUES ('vc3');
 INSERT INTO vendor_specification(id, additional_info, vendor_contact_entity_id) VALUES ('vs3', '{}', 'vc3');
 INSERT INTO vendor (id, vendor_name, vendor_baseurl, vendor_spec_id, vendor_service_class) VALUES ('v3', 'Cornell Test Server', 'https://slimstest.biotech.cornell.edu/brapi/v1/', 'vs3', 1);
 
+INSERT INTO vendor_contact(id) VALUES ('vc4');
+INSERT INTO vendor_specification(id, additional_info, vendor_contact_entity_id) VALUES ('vs4', '{}', 'vc4');
+INSERT INTO vendor (id, vendor_name, vendor_baseurl, vendor_spec_id, vendor_service_class) VALUES ('v4', 'DArT Test Server', 'https://ordering-testing.diversityarrays.com/brapi/v1', 'vs4', 2);
+
 INSERT INTO sample_group(id, date_created, date_modified, description, name) VALUES ('1A', now(), now(), 'sample group 1', 'Demo Sample Group');
 INSERT INTO sample(id, concentration, notes, sample_external_id, sample_timestamp, sample_type, taken_by, tissue_type, volume, group_id)	VALUES ('s1', '10', 'notes', 'externalID_1234', now(), 'tissue', 'Bob', 'leaf', '10', '1A');
 INSERT INTO sample(id, concentration, notes, sample_external_id, sample_timestamp, sample_type, taken_by, tissue_type, volume, group_id)	VALUES ('s2', '10', 'notes', 'externalID_2345', now(), 'tissue', 'Bob', 'leaf', '10', '1A');

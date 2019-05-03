@@ -8,11 +8,13 @@ public class VendorServiceFactory {
 	
 	private DefaultVendorService defaultVendorService;
 	private CornellVendorService cornellVendorService;
+	private DartVendorService dartVendorService;
 	
 	@Autowired
-	public VendorServiceFactory(DefaultVendorService defaultVendorService, CornellVendorService cornellVendorService) {
+	public VendorServiceFactory(DefaultVendorService defaultVendorService, CornellVendorService cornellVendorService, DartVendorService dartVendorService) {
 		this.defaultVendorService = defaultVendorService;
 		this.cornellVendorService = cornellVendorService;
+		this.dartVendorService = dartVendorService;
 	}
 	
 	public VendorServiceInterface getVendorService(VendorServiceClassEnum serviceClass) {
@@ -20,6 +22,9 @@ public class VendorServiceFactory {
 		switch (serviceClass) {
 		case CORNELL:
 			service = cornellVendorService;
+			break;
+		case DART:
+			service = dartVendorService;
 			break;
 		case DEFAULT:
 		default:
@@ -30,6 +35,6 @@ public class VendorServiceFactory {
 	}
 	
 	public enum VendorServiceClassEnum{
-		DEFAULT, CORNELL;
+		DEFAULT, CORNELL, DART;
 	}
 }

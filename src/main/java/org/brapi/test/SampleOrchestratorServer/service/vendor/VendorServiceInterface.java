@@ -7,4 +7,8 @@ public interface VendorServiceInterface {
 	public String getAuthToken();
 	
 	public Map<String, String> getRequiredServiceInfo();
+	
+	public boolean isFullOrder();
+
+	public String getClientId();
 }

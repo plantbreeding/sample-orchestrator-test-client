@@ -74,7 +74,7 @@ public class VendorService {
 
 			sampleGroup = sampleGroupRepository.save(sampleGroup);
 			submission.setSampleGroup(sampleGroup);
-			submission.setVendor_ServiceId(serviceOpt.get().getServiceId());
+			submission.setVendorService(serviceOpt.get());
 			submission.setSubmissionStage(SubmissionStageEnum.NEW_SUBMISSION);
 			submission.setVendor(vendorOpt.get());
 			submission = submissionRepository.save(submission);

@@ -23,7 +23,7 @@ public class SubmissionEntity extends BaseEntity {
 	@Column
 	private String vendor_OrderId;
 	@Column
-	private String vendor_ServiceId;
+	private String vendor_SamplesId;
 	@Column
 	private Integer genotypeDB_PollingAttempts;
 	@Column
@@ -39,7 +39,18 @@ public class SubmissionEntity extends BaseEntity {
 	joinColumns = @JoinColumn(name = "vendor_id", referencedColumnName = "id"), 
 	inverseJoinColumns = @JoinColumn(name = "submission_id", referencedColumnName = "id"))
 	private VendorEntity vendor;
+	@ManyToOne
+	@JoinTable(name = "submission_vendor_service", 
+	joinColumns = @JoinColumn(name = "vendor_service_id", referencedColumnName = "id"), 
+	inverseJoinColumns = @JoinColumn(name = "submission_id", referencedColumnName = "id"))
+	private VendorSpecificationServiceEntity vendorService;
 	
+	public String getVendor_SamplesId() {
+		return vendor_SamplesId;
+	}
+	public void setVendor_SamplesId(String vendor_SamplesId) {
+		this.vendor_SamplesId = vendor_SamplesId;
+	}
 	public VendorEntity getVendor() {
 		return vendor;
 	}
@@ -49,11 +60,11 @@ public class SubmissionEntity extends BaseEntity {
 	public String getShortId() {
 		return this.getId().substring(0, 8);
 	}
-	public String getVendor_ServiceId() {
-		return vendor_ServiceId;
+	public VendorSpecificationServiceEntity getVendorService() {
+		return vendorService;
 	}
-	public void setVendor_ServiceId(String vendor_ServiceId) {
-		this.vendor_ServiceId = vendor_ServiceId;
+	public void setVendorService(VendorSpecificationServiceEntity vendorService) {
+		this.vendorService = vendorService;
 	}
 	public SampleGroupEntity getSampleGroup() {
 		return sampleGroup;

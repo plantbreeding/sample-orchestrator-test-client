@@ -2,29 +2,30 @@ package org.brapi.test.SampleOrchestratorServer.model.json;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
-
-/**
- * Response to an order request
- */
-@ApiModel(description = "Response to an order request")
-@Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2018-12-05T14:32:54.779-05:00[America/New_York]")
 
 public class VendorOrderResponseResult   {
   @JsonProperty("orderId")
   private String orderId = null;
 
   @JsonProperty("shipmentForms")
-  @Valid
   private List<VendorOrderResponseResultShipmentForms> shipmentForms = null;
+  
+  @JsonProperty("submissionId")
+  private String submissionId = null;
+  
+  public String getSubmissionId() {
+	return submissionId;
+}
 
-  public VendorOrderResponseResult orderId(String orderId) {
+public void setSubmissionId(String submissionId) {
+	this.submissionId = submissionId;
+}
+
+public VendorOrderResponseResult orderId(String orderId) {
     this.orderId = orderId;
     return this;
   }

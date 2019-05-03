@@ -18,4 +18,15 @@ public class DefaultVendorService implements VendorServiceInterface {
 		return new HashMap<>();
 	}
 
+	@Override
+	public boolean isFullOrder() {
+		return true;
+	}
+
+	@Override
+	public String getClientId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

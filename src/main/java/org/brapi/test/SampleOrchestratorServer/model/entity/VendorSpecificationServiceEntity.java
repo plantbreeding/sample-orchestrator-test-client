@@ -14,7 +14,7 @@ import org.brapi.test.SampleOrchestratorServer.repository.ObjectConverter;
 @Entity
 @Table(name = "vendor_specification_service")
 public class VendorSpecificationServiceEntity extends BaseEntity {
-	@Column
+	@Column(length=2000)
 	private String serviceDescription = null;
 	@Column
 	private String serviceId = null;

@@ -7,9 +7,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CornellVendorService implements VendorServiceInterface {
+public class DartVendorService implements VendorServiceInterface {
 
-	@Value("${vendor.cornell.token}")
+	@Value("${vendor.dart.token}")
 	private String fiveYearToken;
 	
 	@Value("${vendor.cornell.projectId}")
@@ -17,7 +17,7 @@ public class CornellVendorService implements VendorServiceInterface {
 	
 	@Override
 	public String getAuthToken() {
-		return "Bearer:" + fiveYearToken;
+		return "Bearer " + fiveYearToken;
 	}
 
 	@Override
@@ -29,13 +29,12 @@ public class CornellVendorService implements VendorServiceInterface {
 
 	@Override
 	public boolean isFullOrder() {
-		return true;
+		return false;
 	}
 
 	@Override
 	public String getClientId() {
-		// TODO Auto-generated method stub
-		return null;
+		return "peter";
 	}
 
 }

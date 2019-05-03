@@ -20,7 +20,7 @@ public class VendorSample   {
   private String clientSampleId = null;
 
   @JsonProperty("column")
-  private String column = null;
+  private Integer column = null;
 
   @JsonProperty("comments")
   private String comments = null;
@@ -92,7 +92,7 @@ public class VendorSample   {
     this.clientSampleId = clientSampleId;
   }
 
-  public VendorSample column(String column) {
+  public VendorSample column(Integer column) {
     this.column = column;
     return this;
   }
@@ -104,11 +104,11 @@ public class VendorSample   {
   @ApiModelProperty(value = "The Column identifier for this samples location in the plate")
 
 
-  public String getColumn() {
+  public Integer getColumn() {
     return column;
   }
 
-  public void setColumn(String column) {
+  public void setColumn(Integer column) {
     this.column = column;
   }
 

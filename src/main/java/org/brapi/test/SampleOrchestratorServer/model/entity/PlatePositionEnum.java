@@ -12,5 +12,14 @@ public enum PlatePositionEnum {
     A09,B09,C09,D09,E09,F09,G09,H09,
     A10,B10,C10,D10,E10,F10,G10,H10,
     A11,B11,C11,D11,E11,F11,G11,H11,
-    A12,B12,C12,D12,E12,F12,G12,H12
+    A12,B12,C12,D12,E12,F12,G12,H12;
+    
+
+    public Integer getColumn() {
+    	return Integer.parseInt(this.name().substring(1, 3));
+    }
+    
+    public String getRow() {
+    	return this.name().substring(0, 1);
+    }
 }

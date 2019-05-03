@@ -15,6 +15,8 @@ import org.brapi.test.SampleOrchestratorServer.model.entity.SubmissionEntity;
 import org.brapi.test.SampleOrchestratorServer.model.entity.SubmissionStageEnum;
 import org.brapi.test.SampleOrchestratorServer.model.json.Measurement;
 import org.brapi.test.SampleOrchestratorServer.model.json.PlateFormat;
+import org.brapi.test.SampleOrchestratorServer.model.json.VendorOrderDetails;
+import org.brapi.test.SampleOrchestratorServer.model.json.VendorOrderDetailsResponse;
 import org.brapi.test.SampleOrchestratorServer.model.json.VendorOrderRequest;
 import org.brapi.test.SampleOrchestratorServer.model.json.VendorOrderRequest.SampleTypeEnum;
 import org.brapi.test.SampleOrchestratorServer.model.json.VendorOrderRequestPlates;
@@ -61,44 +63,24 @@ public class SampleSubmissionService {
 
 		if (submissionOpt.isPresent()) {
 			SubmissionEntity submission = submissionOpt.get();
-			
+
 			socketController.pushSubmissionStatus(submission.getId());
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
+			logger.info(submission.getShortId() + " Sending sample data to Vendor");
+//			try {
+//				Thread.sleep(1000);
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+
 			try {
 				VendorServiceInterface uniqueVendorService = vendorServiceFactory
 						.getVendorService(submission.getVendor().getVendorServiceClass());
-				logger.info(submission.getShortId() + " Sending sample data to Vendor");
 
-				VendorOrderRequest request = new VendorOrderRequest();
-				request.setClientId(submission.getId());
-				request.setNumberOfSamples(submission.getSampleGroup().getSamples().size());
-				request.setPlates(convertPlates(submission.getSampleGroup().getPlates()));
-				request.setRequiredServiceInfo(uniqueVendorService.getRequiredServiceInfo());
-				request.setSampleType(SampleTypeEnum.TISSUE);
-				request.setServiceIds(Arrays.asList(submission.getVendor_ServiceId()));
-
-				VendorOrderResponse response = restClientService.postVendorOrders(
-						submission.getVendor().getVendorBaseURL(), uniqueVendorService.getAuthToken(), request);
-
-				if (response != null) {
-					submission.setVendor_OrderId(response.getResult().getOrderId());
-					submission.setSubmissionStage(SubmissionStageEnum.WAITING_FOR_VENDOR);
-					submission.setVendor_PollingAttempts(0);
-					logger.info("\t" + submission.getShortId() + " Vendor accepted sample data with Vendor Order Id "
-							+ response.getResult().getOrderId());
-				} else {
-					submission.setSubmissionStage(SubmissionStageEnum.ERROR);
-					submission.setVendor_PollingAttempts(0);
-					submission.setErrorMsg("Submission to vendor failed");
-					logger.error("\t" + submission.getShortId() + " Submission to vendor failed");
+				if(uniqueVendorService.isFullOrder()) {
+					submitFullOrder(submission, uniqueVendorService);
+				}else {
+					submitSamplesOnly(submission, uniqueVendorService);
 				}
-
 			} catch (Exception e) {
 				submission.setSubmissionStage(SubmissionStageEnum.ERROR);
 				submission.setErrorMsg("Exception Occured");
@@ -113,9 +95,101 @@ public class SampleSubmissionService {
 
 	}
 
+	private void submitSamplesOnly(SubmissionEntity submission, VendorServiceInterface uniqueVendorService) {
+		VendorOrderRequest request = new VendorOrderRequest();
+		request.setClientId(uniqueVendorService.getClientId());
+		request.setNumberOfSamples(submission.getSampleGroup().getSamples().size());
+		request.setPlates(convertPlates(submission));
+		request.setSampleType(SampleTypeEnum.TISSUE);
+
+		VendorOrderResponse response = restClientService.postVendorSamples(submission.getVendor().getVendorBaseURL(),
+				uniqueVendorService.getAuthToken(), request);
+
+		if (response != null) {
+			submission.setVendor_SamplesId(response.getResult().getSubmissionId());
+			submission.setSubmissionStage(SubmissionStageEnum.WAITING_FOR_USER);
+			submission.setErrorMsg("Please click <a href=\"" + submission.getVendor().getVendorBaseURL().replace("/brapi/v1", "/order.pl") + "\" target=\"_blank\">HERE</a> to complete order. Samples Id: " + response.getResult().getSubmissionId() );
+			submission.setVendor_PollingAttempts(0);
+			logger.info("\t" + submission.getShortId() + " Vendor accepted sample data with Vendor Order Id "
+					+ response.getResult().getOrderId());
+		} else {
+			submission.setSubmissionStage(SubmissionStageEnum.ERROR);
+			submission.setVendor_PollingAttempts(0);
+			submission.setErrorMsg("Submission to vendor failed");
+			logger.error("\t" + submission.getShortId() + " Submission to vendor failed");
+		}
+	}
+
+	private void submitFullOrder(SubmissionEntity submission, VendorServiceInterface uniqueVendorService) {
+		VendorOrderRequest request = new VendorOrderRequest();
+		request.setClientId(submission.getId());
+		request.setNumberOfSamples(submission.getSampleGroup().getSamples().size());
+		request.setPlates(convertPlates(submission));
+		request.setRequiredServiceInfo(uniqueVendorService.getRequiredServiceInfo());
+		request.setSampleType(SampleTypeEnum.TISSUE);
+		request.setServiceIds(Arrays.asList(submission.getVendorService().getId()));
+
+		VendorOrderResponse response = restClientService.postVendorOrders(submission.getVendor().getVendorBaseURL(),
+				uniqueVendorService.getAuthToken(), request);
+
+		if (response != null) {
+			submission.setVendor_OrderId(response.getResult().getOrderId());
+			submission.setSubmissionStage(SubmissionStageEnum.WAITING_FOR_VENDOR);
+			submission.setVendor_PollingAttempts(0);
+			logger.info("\t" + submission.getShortId() + " Vendor accepted sample data with Vendor Order Id "
+					+ response.getResult().getOrderId());
+		} else {
+			submission.setSubmissionStage(SubmissionStageEnum.ERROR);
+			submission.setVendor_PollingAttempts(0);
+			submission.setErrorMsg("Submission to vendor failed");
+			logger.error("\t" + submission.getShortId() + " Submission to vendor failed");
+		}
+
+	}
+
 	@Scheduled(fixedDelay = 10000)
 	public void pollVendorSubmissions() {
 		logger.debug("Polling Vendor Submissions");
+		Pageable pageReq = PageRequest.of(0, 1000, Sort.unsorted());
+		Page<SubmissionEntity> submissions = submissionRepository
+				.findBySubmissionStage(SubmissionStageEnum.WAITING_FOR_USER, pageReq);
+		for (SubmissionEntity submission : submissions) {
+			try {
+				String authToken = vendorServiceFactory.getVendorService(submission.getVendor().getVendorServiceClass())
+						.getAuthToken();
+				VendorOrderDetailsResponse response = restClientService.getVendorOrdersForSubmission(
+						submission.getVendor().getVendorBaseURL(), authToken, submission.getVendor_SamplesId());
+
+				submission.setVendor_PollingAttempts(submission.getVendor_PollingAttempts() + 1);
+
+				logger.info("\t" + submission.getShortId() + " Vendor Samples Id: " + submission.getVendor_SamplesId());
+				logger.info("\t" + submission.getShortId() + " Vendor status: " + submission.getVendor_LastStatus());
+				logger.info("\t" + submission.getShortId() + " Vendor polling attempt: "
+						+ submission.getVendor_PollingAttempts());
+
+				if (!response.getResult().getData().isEmpty()) {
+					VendorOrderDetails order = response.getResult().getData().get(0);
+					submission.setVendor_OrderId(order.getOrderId());
+					submission.setSubmissionStage(SubmissionStageEnum.WAITING_FOR_VENDOR);
+					submission.setVendor_PollingAttempts(0);
+					logger.info("\t" + submission.getShortId() + " Vendor accepted sample data with Vendor Order Id "
+							+ order.getOrderId());
+				}
+
+			} catch (Exception e) {
+				submission.setSubmissionStage(SubmissionStageEnum.ERROR);
+				submission.setErrorMsg("Exception Occured");
+				logger.error("\t" + submission.getShortId() + " Exception Occured");
+			} finally {
+				submissionRepository.save(submission);
+				socketController.pushSubmissionStatus(submission.getId());
+			}
+		}
+	}
+	
+	@Scheduled(fixedDelay = 10000)
+	public void pollVendorOrders() {
+		logger.debug("Polling Vendor Orders");
 		Pageable pageReq = PageRequest.of(0, 1000, Sort.unsorted());
 		Page<SubmissionEntity> submissions = submissionRepository
 				.findBySubmissionStage(SubmissionStageEnum.WAITING_FOR_VENDOR, pageReq);
@@ -180,9 +254,7 @@ public class SampleSubmissionService {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				
-				
-				
+
 				logger.info(submission.getShortId() + " Results are being sent to the Genotyping Database");
 				submission.setSubmissionStage(SubmissionStageEnum.WAITING_FOR_GENOTYPE_DATABASE);
 				submission.setGenotypeDB_PollingAttempts(0);
@@ -243,8 +315,9 @@ public class SampleSubmissionService {
 		}
 	}
 
-	private List<VendorOrderRequestPlates> convertPlates(Set<PlateEntity> plateEntities) {
+	private List<VendorOrderRequestPlates> convertPlates(SubmissionEntity submission) {
 		List<VendorOrderRequestPlates> plates = new ArrayList<>();
+		Set<PlateEntity> plateEntities = submission.getSampleGroup().getPlates();
 		for (PlateEntity plateEntity : plateEntities) {
 			VendorOrderRequestPlates plate = new VendorOrderRequestPlates();
 			plate.setClientPlateBarcode(plateEntity.getId());
@@ -266,13 +339,13 @@ public class SampleSubmissionService {
 		VendorSample sample = new VendorSample();
 		sample.setClientSampleBarCode(entity.getId());
 		sample.setClientSampleId(entity.getId());
-		sample.setColumn(platePos.getPosition().name());
+		sample.setColumn(platePos.getPosition().getColumn());
 		sample.setComments(entity.getNotes());
 		Measurement con = new Measurement().units("ml").value(new BigDecimal(entity.getConcentration()));
 		sample.setConcentration(con);
-		sample.setOrganismName(null);
-		sample.setRow(platePos.getPosition().name());
-		sample.setSpeciesName(null);
+		sample.setOrganismName("Acacia");
+		sample.setRow(platePos.getPosition().getRow());
+		sample.setSpeciesName("Acacia aemula");
 		sample.setTaxonomyOntologyReference(null);
 		sample.setTissueType(entity.getTissueType());
 		sample.setTissueTypeOntologyReference(null);

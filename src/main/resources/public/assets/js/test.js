@@ -27,6 +27,8 @@ function handleStatusMessage(data){
 		message = 'Sending results to Genotype Database';
 	}else if (status.stage == 'WAITING_FOR_GENOTYPE_DATABASE') {
 		message = 'Genotype Database is working. Status: ' + status.status;
+	}else if (status.stage == 'WAITING_FOR_USER') {
+		message = status.errorMsg;
 	}else if (status.stage == 'ERROR') {
 		message = 'An error occured: ' + status.errorMsg;
 	} else {
