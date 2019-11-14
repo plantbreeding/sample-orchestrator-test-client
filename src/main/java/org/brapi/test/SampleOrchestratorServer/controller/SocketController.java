@@ -36,11 +36,14 @@ public class SocketController {
 		Optional<SubmissionEntity> submissionOpt = submissionRepository.findById(submissionId);
 		
 		if (submissionOpt.isPresent()) {
-			response.setId(submissionOpt.get().getId());
-			response.setStage(submissionOpt.get().getSubmissionStage().name());
-			response.setStatus(findStatus(submissionOpt.get()));
-			response.setErrorMsg(submissionOpt.get().getErrorMsg());
-			response.setVendorName(submissionOpt.get().getVendor().getVendorName());
+			SubmissionEntity submission = submissionOpt.get();
+			response.setId(submission.getId());
+			response.setStage(submission.getSubmissionStage().name());
+			response.setStatus(findStatus(submission));
+			response.setErrorMsg(submission.getErrorMsg());
+			response.setVendorName(submission.getVendor().getVendorName());
+			response.setPercentComplete(submission.getSubmissionStage().getPercentComplete());
+			response.setColor(submission.getSubmissionStage().getColor());
 		}		
 		simpMessagingTemplate.convertAndSend("/topic/status", response);
 	}

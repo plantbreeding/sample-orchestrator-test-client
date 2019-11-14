@@ -25,8 +25,7 @@ public class DefaultVendorService implements VendorServiceInterface {
 
 	@Override
 	public String getClientId() {
-		// TODO Auto-generated method stub
-		return null;
+		return "clientID";
 	}
 
 }

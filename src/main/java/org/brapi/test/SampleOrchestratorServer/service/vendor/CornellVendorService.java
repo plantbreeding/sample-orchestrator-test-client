@@ -17,7 +17,7 @@ public class CornellVendorService implements VendorServiceInterface {
 	
 	@Override
 	public String getAuthToken() {
-		return "Bearer:" + fiveYearToken;
+		return "Bearer " + fiveYearToken;
 	}
 
 	@Override

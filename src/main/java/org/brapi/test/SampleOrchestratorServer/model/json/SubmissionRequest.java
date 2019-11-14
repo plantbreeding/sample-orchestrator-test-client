@@ -12,7 +12,9 @@ public class SubmissionRequest {
 
 	@JsonProperty("vendorServiceDbId")
 	private String vendorServiceDbId;
-
+	
+	@JsonProperty("genotypeDbId")
+	private String genotypeDbId;
 	
 	public String getVendorServiceDbId() {
 		return vendorServiceDbId;
@@ -36,6 +38,14 @@ public class SubmissionRequest {
 
 	public void setVendorDbId(String vendorDbId) {
 		this.vendorDbId = vendorDbId;
+	}
+
+	public String getGenotypeDbId() {
+		return genotypeDbId;
+	}
+
+	public void setGenotypeDbId(String genotypeDbId) {
+		this.genotypeDbId = genotypeDbId;
 	}
 
 }

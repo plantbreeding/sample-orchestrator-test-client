@@ -9,21 +9,12 @@
 <link href="assets/css/bootstrap/dist/css/bootstrap.min.css"
 	rel="stylesheet">
 <link href="assets/css/style.css" rel="stylesheet">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script	src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.3.0/sockjs.min.js"></script>
 <script	src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script type="text/javascript" src="assets/js/test.js"></script>
-<script>
-	$(document).ready(
-			function() {
-				connect();
-				getVendorsAjax(function(data, status) {
-					sessionStorage.setItem("vendors_array", JSON
-							.stringify(data.result.data))
-					updateVendorList();
-				})
-			});
-</script>
+
 </head>
 <body>
 	<main>
@@ -48,10 +39,10 @@
 		</div>
 	</nav>
 	<section class="module-small bg-dark-60 about-page-header"
-		style="background: url('assets/images/header.jpg');">
+		style="background: url('assets/images/header.jpg'); padding: 50px 0 0 0;">
 		<div class="container">
 			<div class="row">
-				<div class="col-sm-6 col-sm-offset-3">
+				<div class="col-sm-8 col-sm-offset-2">
 					<h1 class="brapi-page-title font-alt">Sample Orchestrater Test
 						Environment</h1>
 				</div>
@@ -65,23 +56,24 @@
 					<div>
 						<a href="/index.html" class="btn"> &lt Back</a>
 					</div>
-					<div class="btn" onclick="startTest()">Run &gt</div>
+					<div class="btn" onclick="startTest()">Submit &gt</div>
 				</div>
 				<div class="col-sm-8">
-					Vendor: <select id="vendor_select"
-						onchange="updateVendorServiceList();"></select>
+					<div class="col-sm-3"> Vendor: </div> 
+					<select  class="col-sm-5" id="vendor_select"	onchange="updateVendorServiceList();"></select>
 				</div>
 				<div class="col-sm-8">
-					Vendor Service: <select id="vendor_service_select"></select>
+					<div class="col-sm-3"> Vendor Service: </div> 
+					<select class="col-sm-5" id="vendor_service_select"></select>
 				</div>
 				<div class="col-sm-8">
-					Genotype DB: <select id="geno_select"></select>
+					<div class="col-sm-3"> Genotype DB: </div> 
+					<select class="col-sm-5" id="geno_select"></select>
 				</div>
 			</div>
 			<div class="row"
 				style="border-top: black 2px solid; margin-top: 10px; padding-top: 10px;">
-				<div class="col-sm-8 col-sm-offset-3">
-					<p id=log></p>
+				<div id=log class="col-sm-8 col-sm-offset-3">
 				</div>
 			</div>
 		</div>

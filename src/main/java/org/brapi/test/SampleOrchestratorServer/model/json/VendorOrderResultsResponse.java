@@ -3,16 +3,23 @@ package org.brapi.test.SampleOrchestratorServer.model.json;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
+import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 
-public class VendorOrderDetailsResponse   {
+/**
+ * VendorOrderResultsResponse
+ */
+@Validated
+@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2018-12-05T14:32:54.779-05:00[America/New_York]")
+
+public class VendorOrderResultsResponse   {
   @JsonProperty("metadata")
   private Metadata metadata = null;
 
   @JsonProperty("result")
-  private VendorOrderDetailsResponseResult result = null;
+  private VendorOrderResultsResponseResult result = null;
 
-  public VendorOrderDetailsResponse metadata(Metadata metadata) {
+  public VendorOrderResultsResponse metadata(Metadata metadata) {
     this.metadata = metadata;
     return this;
   }
@@ -33,7 +40,7 @@ public class VendorOrderDetailsResponse   {
     this.metadata = metadata;
   }
 
-  public VendorOrderDetailsResponse result(VendorOrderDetailsResponseResult result) {
+  public VendorOrderResultsResponse result(VendorOrderResultsResponseResult result) {
     this.result = result;
     return this;
   }
@@ -46,11 +53,11 @@ public class VendorOrderDetailsResponse   {
 
   @Valid
 
-  public VendorOrderDetailsResponseResult getResult() {
+  public VendorOrderResultsResponseResult getResult() {
     return result;
   }
 
-  public void setResult(VendorOrderDetailsResponseResult result) {
+  public void setResult(VendorOrderResultsResponseResult result) {
     this.result = result;
   }
 
@@ -63,9 +70,9 @@ public class VendorOrderDetailsResponse   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    VendorOrderDetailsResponse vendorOrderResponse = (VendorOrderDetailsResponse) o;
-    return Objects.equals(this.metadata, vendorOrderResponse.metadata) &&
-        Objects.equals(this.result, vendorOrderResponse.result);
+    VendorOrderResultsResponse vendorOrderResultsResponse = (VendorOrderResultsResponse) o;
+    return Objects.equals(this.metadata, vendorOrderResultsResponse.metadata) &&
+        Objects.equals(this.result, vendorOrderResultsResponse.result);
   }
 
   @Override
@@ -76,7 +83,7 @@ public class VendorOrderDetailsResponse   {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class VendorOrderResponse {\n");
+    sb.append("class VendorOrderResultsResponse {\n");
     
     sb.append("    metadata: ").append(toIndentedString(metadata)).append("\n");
     sb.append("    result: ").append(toIndentedString(result)).append("\n");

@@ -44,6 +44,11 @@ public class SubmissionEntity extends BaseEntity {
 	joinColumns = @JoinColumn(name = "vendor_service_id", referencedColumnName = "id"), 
 	inverseJoinColumns = @JoinColumn(name = "submission_id", referencedColumnName = "id"))
 	private VendorSpecificationServiceEntity vendorService;
+	@ManyToOne
+	@JoinTable(name = "submission_genotype_db", 
+	joinColumns = @JoinColumn(name = "genotype_db_id", referencedColumnName = "id"), 
+	inverseJoinColumns = @JoinColumn(name = "submission_id", referencedColumnName = "id"))
+	private GenotypeDBEntity genotypeDB;
 	
 	public String getVendor_SamplesId() {
 		return vendor_SamplesId;
@@ -120,7 +125,10 @@ public class SubmissionEntity extends BaseEntity {
 	public void setErrorMsg(String errorMsg) {
 		this.errorMsg = errorMsg;
 	}
-	
-	
-	
+	public GenotypeDBEntity getGenotypeDB() {
+		return genotypeDB;
+	}
+	public void setGenotypeDB(GenotypeDBEntity genotypeDB) {
+		this.genotypeDB = genotypeDB;
+	}
 }

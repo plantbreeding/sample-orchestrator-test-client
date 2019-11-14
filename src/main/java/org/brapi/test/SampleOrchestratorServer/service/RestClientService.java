@@ -3,9 +3,11 @@ package org.brapi.test.SampleOrchestratorServer.service;
 import java.net.URI;
 
 import org.brapi.test.SampleOrchestratorServer.model.entity.VendorEntity;
+import org.brapi.test.SampleOrchestratorServer.model.json.SamplesResponse;
 import org.brapi.test.SampleOrchestratorServer.model.json.VendorOrderDetailsResponse;
 import org.brapi.test.SampleOrchestratorServer.model.json.VendorOrderRequest;
 import org.brapi.test.SampleOrchestratorServer.model.json.VendorOrderResponse;
+import org.brapi.test.SampleOrchestratorServer.model.json.VendorOrderResultsResponse;
 import org.brapi.test.SampleOrchestratorServer.model.json.VendorOrderStatusResponse;
 import org.brapi.test.SampleOrchestratorServer.model.json.VendorSpecification;
 import org.brapi.test.SampleOrchestratorServer.model.json.VendorSpecificationResponse;
@@ -33,7 +35,9 @@ public class RestClientService {
 	public static String POST_VENDOR_ORDERS = "/vendor/orders";
 	public static String POST_VENDOR_SAMPLES = "/vendor/plates";
 	public static String GET_VENDOR_ORDERS_STATUS = "/vendor/orders/{orderId}/status";
+	public static String GET_VENDOR_ORDERS_RESULTS = "/vendor/orders/{orderId}/results";
 	public static String GET_VENDOR_ORDERS_FOR_SUBMISSIONID = "/vendor/orders";
+	public static String GET_EXTERNAL_SOURCE_SAMPLES = "/samples";
 
 	public VendorOrderResponse postVendorSamples(String baseURL, String authToken, VendorOrderRequest request) {
 		URI uri = URI.create(baseURL + POST_VENDOR_SAMPLES);
@@ -68,7 +72,7 @@ public class RestClientService {
 			logger.debug("response status: " + raw.getStatusCodeValue());
 			response = raw.getBody();
 		}catch (RestClientException e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 
 		return response;
@@ -91,9 +95,25 @@ public class RestClientService {
 		return response;
 	}
 
-	public String getGenotypeDBLoadStatus(String genotypeDB_OrderId) {
-		// TODO Auto-generated method stub
-		return null;
+	public VendorOrderResultsResponse getVendorOrdersResults(String baseURL, String authToken, String orderId) {
+		URI uri = URI.create(baseURL + GET_VENDOR_ORDERS_RESULTS.replace("{orderId}", orderId));
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(AUTH_HEADER, authToken);
+		HttpEntity<String> entity = new HttpEntity<String>(headers);
+		VendorOrderResultsResponse response = null;
+		try { 
+			ResponseEntity<VendorOrderResultsResponse> raw = restTemplate.exchange(uri, HttpMethod.GET, entity, VendorOrderResultsResponse.class);
+			logger.debug("response status: " + raw.getStatusCodeValue());
+			response = raw.getBody();
+		}catch (RestClientException e) {
+			// TODO: handle exception
+		}
+		return response;
+	}
+
+	public String getGenotypeDBLoadStatus(String baseURL, String authToken, String genotypeDB_OrderId) {
+		return "recieved";
 	}
 	
 	public VendorSpecification getVendorSpecifications(String authToken, VendorEntity vendorEntity) {	
@@ -119,11 +139,14 @@ public class RestClientService {
 				logger.debug("response status: " + raw.getStatusCodeValue());
 				spec = raw.getBody().getResult();
 			}catch (RestClientException e) {
-				e.printStackTrace();
+				logger.error("call to uri failed: " + uri);
+				logger.error(e.getMessage());
+				//e.printStackTrace();
 			}
 		}
 		return spec;
 	}
+	
 	public VendorOrderDetailsResponse getVendorOrdersForSubmission(String baseURL, String authToken,
 			String submissionId) {
 		UriComponentsBuilder builder = UriComponentsBuilder
@@ -136,6 +159,25 @@ public class RestClientService {
 		VendorOrderDetailsResponse response = null;
 		try { 
 			ResponseEntity<VendorOrderDetailsResponse> raw = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, entity, VendorOrderDetailsResponse.class);
+			logger.debug("response status: " + raw.getStatusCodeValue());
+			response = raw.getBody();
+		}catch (RestClientException e) {
+			// TODO: handle exception
+		}
+		return response;
+	}
+	
+	public SamplesResponse getExternalSourceSamples(String baseURL, String authToken) {
+		UriComponentsBuilder builder = UriComponentsBuilder
+				.fromHttpUrl(baseURL + GET_EXTERNAL_SOURCE_SAMPLES)
+		        .queryParam("pageSize", "1");
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(AUTH_HEADER, authToken);
+		HttpEntity<String> entity = new HttpEntity<String>(headers);
+		SamplesResponse response = null;
+		try { 
+			ResponseEntity<SamplesResponse> raw = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, entity, SamplesResponse.class);
 			logger.debug("response status: " + raw.getStatusCodeValue());
 			response = raw.getBody();
 		}catch (RestClientException e) {

@@ -59,7 +59,7 @@ public class SampleService {
 		sample.setNotes(entity.getNotes());
 		sample.setSampleExternalId(entity.getSampleExternalId());
 		sample.setSampleDbId(entity.getId());
-		sample.setSampleTimestamp(DateUtility.toOffsetDateTime(entity.getSampleTimestamp()));
+		sample.setSampleTimestamp(DateUtility.toDateString(entity.getSampleTimestamp()));
 		sample.setSampleType(entity.getSampleType());
 		sample.setTakenBy(entity.getTakenBy());
 		sample.setTissueType(entity.getTissueType());

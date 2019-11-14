@@ -85,6 +85,14 @@ public class SampleGroupEntity extends BaseEntity {
 		
 		getPlates().add(plate);
 	}
+
+	public void addSample(SampleEntity sampleEntity) {
+		if(getSamples() == null)
+			setSamples(new HashSet<>());
+		
+		getSamples().add(sampleEntity);
+		
+	}
 	
 	
 }

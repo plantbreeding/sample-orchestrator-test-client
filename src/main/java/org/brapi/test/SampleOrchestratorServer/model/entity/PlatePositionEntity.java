@@ -1,17 +1,22 @@
 package org.brapi.test.SampleOrchestratorServer.model.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 @Entity
 @Table(name="plate_position")
 public class PlatePositionEntity extends BaseEntity{
 	@Column
     private PlatePositionEnum position;
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
+	@LazyCollection(LazyCollectionOption.FALSE)
     private SampleEntity sample;
 	@ManyToOne
 	private PlateEntity plate;

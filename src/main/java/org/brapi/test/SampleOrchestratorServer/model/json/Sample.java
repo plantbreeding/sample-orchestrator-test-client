@@ -3,7 +3,6 @@ package org.brapi.test.SampleOrchestratorServer.model.json;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
-import org.threeten.bp.OffsetDateTime;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 
@@ -36,7 +35,7 @@ public class Sample   {
   private String sampleDbId = null;
 
   @JsonProperty("sampleTimestamp")
-  private OffsetDateTime sampleTimestamp = null;
+  private String sampleTimestamp = null;
 
   @JsonProperty("sampleType")
   private String sampleType = null;
@@ -190,7 +189,7 @@ public class Sample   {
     this.sampleDbId = sampleDbId;
   }
 
-  public Sample sampleTimestamp(OffsetDateTime sampleTimestamp) {
+  public Sample sampleTimestamp(String sampleTimestamp) {
     this.sampleTimestamp = sampleTimestamp;
     return this;
   }
@@ -203,11 +202,11 @@ public class Sample   {
 
   @Valid
 
-  public OffsetDateTime getSampleTimestamp() {
+  public String getSampleTimestamp() {
     return sampleTimestamp;
   }
 
-  public void setSampleTimestamp(OffsetDateTime sampleTimestamp) {
+  public void setSampleTimestamp(String sampleTimestamp) {
     this.sampleTimestamp = sampleTimestamp;
   }
 

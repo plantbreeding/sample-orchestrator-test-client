@@ -6,7 +6,22 @@ public class SubmissionStatusResponse {
 	String status;
 	String errorMsg;
 	String vendorName;
+	String color;
+	Integer percentComplete;
 	
+	
+	public String getColor() {
+		return color;
+	}
+	public void setColor(String color) {
+		this.color = color;
+	}	
+	public Integer getPercentComplete() {
+		return percentComplete;
+	}
+	public void setPercentComplete(Integer percentComplete) {
+		this.percentComplete = percentComplete;
+	}
 	public String getId() {
 		return id;
 	}
